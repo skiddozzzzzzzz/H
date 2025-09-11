@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Discord Webhook Spammer v2</title>
+<title>Discord Webhook Spammer v3</title>
 <style>
 body {
     font-family: 'Segoe UI', sans-serif;
-    background: #000; /* pure black */
-    color: #fff; /* pure white */
+    background: #000;
+    color: #fff;
     display: flex;
     justify-content: center;
     align-items: flex-start;
@@ -16,40 +16,40 @@ body {
     min-height: 100vh;
 }
 .container {
-    background: #111; /* dark black box */
+    background: #111;
     padding: 25px;
     border-radius: 16px;
-    width: 500px;
-    box-shadow: 0 10px 25px rgba(255,255,255,0.1);
+    width: 580px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.8);
     animation: fadeIn 0.8s ease-out;
+    backdrop-filter: blur(6px);
     text-align: center;
 }
 .center-icon {
     display: block;
     margin: 0 auto 20px auto;
-    width: 80px;
-    height: 80px;
+    width: 90px;
+    height: 90px;
     border-radius: 50%;
     animation: float 3s ease-in-out infinite;
-    filter: grayscale(100%) contrast(200%); /* icon forced black/white */
+    filter: grayscale(100%) contrast(150%) brightness(120%);
 }
 h2 {
-    text-align:center;
     margin-bottom:20px;
-    font-size: 1.6rem;
-    color: #fff; /* white */
+    font-size: 1.7rem;
+    color: #fff;
 }
 input, textarea, button {
     width: 100%;
     margin-top: 12px;
     padding: 12px;
     border-radius: 8px;
-    border: 1px solid #fff;
+    border: none;
     outline: none;
     font-size: 15px;
 }
 input, textarea {
-    background-color: #000;
+    background-color: #222;
     color: #fff;
 }
 textarea { resize: vertical; min-height: 80px; }
@@ -58,55 +58,33 @@ button {
     color: #000;
     font-weight: bold;
     cursor: pointer;
-    transition: transform 0.15s, box-shadow 0.15s, background 0.2s, color 0.2s;
+    transition: transform 0.15s, box-shadow 0.15s;
 }
 button:hover {
-    background: #000;
-    color: #fff;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(255,255,255,0.3);
 }
-.webhook-details {
-    margin-top: 15px; 
+.section {
+    margin-top: 18px;
+    text-align: left;
+}
+.logs, .updates {
+    margin-top: 12px; 
     padding: 12px;
-    background-color: #000;
+    background-color: #111;
     border-radius: 8px;
-    max-height: 150px;
+    max-height: 220px;
     overflow-y: auto;
-    font-size: 14px;
-    border: 1px solid #fff;
+    font-size: 13px;
+    text-align: left;
+    border: 1px solid #444;
 }
-.avatar-preview {
-    width: 90px; 
-    height: 90px; 
-    border-radius: 50%;
-    margin: 15px auto; 
-    display: block; 
-    background-color: #000;
-    border: 3px solid #fff;
-    filter: grayscale(100%) contrast(200%);
+.logs p, .updates p {
+    margin: 5px 0;
+    font-family: monospace;
 }
-.detail-line { 
-    display:flex; 
-    justify-content:space-between; 
-    margin-bottom:6px; 
-    align-items:center;
-    color: #fff;
-}
-.copy-btn { 
-    background:#fff; 
-    color:#000; 
-    border:none; 
-    border-radius:4px; 
-    cursor:pointer; 
-    padding:3px 7px; 
-    font-size:12px; 
-    transition: background 0.2s, color 0.2s;
-}
-.copy-btn:hover { 
-    background:#000; 
-    color:#fff; 
-    border:1px solid #fff;
+.updates p {
+    color: #ccc;
 }
 @keyframes fadeIn { 
     from {opacity:0; transform:translateY(-20px);} 
@@ -121,92 +99,109 @@ button:hover {
 <body>
 
 <div class="container">
-    <!-- Centered Floating Icon -->
-    <img class="center-icon" src="https://cdn.discordapp.com/attachments/1406966556025552909/1407702648144003144/standard_1.gif?ex=68b24581&is=68b0f401&hm=88ae3c449e06c374e6ae960c25e187924b052fe23f514c14c31ef6a8a6d8abda&" alt="Icon">
+    <!-- Floating Icon -->
+    <img class="center-icon" src="https://cdn.discordapp.com/attachments/1406966556025552909/1407702648144003144/standard_1.gif" alt="Icon">
 
-    <h2>Discord Webhook Spammer V2</h2>
-    <input type="text" id="webhookUrl" placeholder="Enter Webhook">
-    <button id="fetchWebhookBtn">Get Webhook Info</button>
+    <h2>Discord Webhook Spammer V3</h2>
 
-    <img id="avatarPreview" class="avatar-preview" src="" alt="Avatar Preview">
-    <div id="webhookDetails" class="webhook-details"></div>
+    <!-- Webhook Inputs -->
+    <input type="text" id="webhook1" placeholder="Webhook 1 (optional)">
+    <input type="text" id="webhook2" placeholder="Webhook 2 (optional)">
+    <input type="text" id="webhook3" placeholder="Webhook 3 (optional)">
+    <input type="text" id="webhook4" placeholder="Webhook 4 (optional)">
+    <input type="text" id="webhook5" placeholder="Webhook 5 (optional)">
 
-    <textarea id="customMessage" placeholder="Custom message"></textarea>
-    <input type="text" id="customUsername" placeholder="Custom username">
-    <input type="text" id="customAvatar" placeholder="Custom avatar link">
+    <!-- Message Inputs -->
+    <textarea id="Message" placeholder="message"></textarea>
+    <input type="text" id="Username" placeholder="username (optional)">
+    <input type="text" id="Avatar" placeholder="avatar link (optional)">
+    
+    <!-- Controls -->
     <button id="spamWebhookBtn">Start Spamming</button>
-    <button id="stopSpamBtn">Stop Spamming</button>
+    <button id="stopSpamBtn" style="background:#fff;color:red;">Stop Spamming</button>
+
+    <!-- Logs -->
+    <div class="section">
+        <h3>Logs</h3>
+        <div class="logs" id="logs">
+            <p>Logs will appear here...</p>
+        </div>
+    </div>
+
+    <!-- Updates -->
+    <div class="section">
+        <h3>Update Logs</h3>
+        <div class="updates" id="updates">
+            <p>Added support for 5 webhooks</p>
+            <p>New Logs panel</p>
+            <p>Added Update Logs panel (changelog)</p>
+            <p>Works even if some webhook fields are empty</p>
+            <p>Polished UI with black and white theme</p>
+        </div>
+    </div>
 </div>
 
 <script>
 let spamInterval;
-
-const fetchBtn = document.getElementById("fetchWebhookBtn");
 const spamBtn = document.getElementById("spamWebhookBtn");
-const stopSpamBtn = document.getElementById("stopSpamBtn");
-const webhookDetailsDiv = document.getElementById("webhookDetails");
-const avatarPreview = document.getElementById("avatarPreview");
+const stopBtn = document.getElementById("stopSpamBtn");
+const logsDiv = document.getElementById("logs");
 
-fetchBtn.addEventListener("click", async () => {
-    const url = document.getElementById("webhookUrl").value;
-    if(!url) return alert("Enter a webhook URL");
-
-    try {
-        const res = await fetch(url);
-        if(!res.ok) throw new Error("Failed to fetch webhook");
-        const data = await res.json();
-
-        webhookDetailsDiv.innerHTML = "";
-        for(const key in data){
-            const line = document.createElement("div");
-            line.className = "detail-line";
-            line.innerHTML = `<span>${key}: ${data[key]}</span>`;
-            const copyBtn = document.createElement("button");
-            copyBtn.textContent = "Copy";
-            copyBtn.className = "copy-btn";
-            copyBtn.onclick = () => navigator.clipboard.writeText(data[key]);
-            line.appendChild(copyBtn);
-            webhookDetailsDiv.appendChild(line);
-        }
-
-        if(data.avatar){
-            avatarPreview.src = `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png`;
-        } else {
-            avatarPreview.src = "";
-        }
-    } catch(e){
-        alert("Failed to fetch webhook: " + e.message);
-    }
-});
+function log(message) {
+    const p = document.createElement("p");
+    p.textContent = "[" + new Date().toLocaleTimeString() + "] " + message;
+    logsDiv.appendChild(p);
+    logsDiv.scrollTop = logsDiv.scrollHeight;
+}
 
 spamBtn.addEventListener("click", () => {
-    const url = document.getElementById("webhookUrl").value;
+    const urls = [
+        document.getElementById("webhook1").value,
+        document.getElementById("webhook2").value,
+        document.getElementById("webhook3").value,
+        document.getElementById("webhook4").value,
+        document.getElementById("webhook5").value
+    ].filter(u => u.trim() !== "");
     const message = document.getElementById("customMessage").value;
     const username = document.getElementById("customUsername").value || undefined;
     const avatar = document.getElementById("customAvatar").value || undefined;
 
-    if(!url || !message) return alert("Webhook URL and message required");
+    if (!message) {
+        alert("Enter a message.");
+        return;
+    }
 
-    if(spamInterval) clearInterval(spamInterval);
+    if (spamInterval) clearInterval(spamInterval);
+
+    log("Spammer started. Sending every 0.01s to " + (urls.length || "0") + " webhook(s).");
+
     spamInterval = setInterval(async () => {
-        try{
-            await fetch(url, {
-                method: "POST",
-                headers: {"Content-Type":"application/json"},
-                body: JSON.stringify({
-                    content: message,
-                    username: username,
-                    avatar_url: avatar
-                })
-            });
-        }catch(e){ console.error("Spam failed:", e); }
-    }, 10); // 0.01 sec = 10 ms
-    alert("Spammer started! Sending every 0.01s");
+        if (urls.length === 0) {
+            log("No webhooks entered.");
+            return;
+        }
+        for (const url of urls) {
+            try {
+                await fetch(url, {
+                    method: "POST",
+                    headers: {"Content-Type":"application/json"},
+                    body: JSON.stringify({
+                        content: message,
+                        username: username,
+                        avatar_url: avatar
+                    })
+                });
+                log("Sent message -> " + url);
+            } catch (e) {
+                log("Error sending to " + url + ": " + e.message);
+            }
+        }
+    }, 10); // 10ms = 0.01s
 });
 
-stopSpamBtn.addEventListener("click", () => {
+stopBtn.addEventListener("click", () => {
     clearInterval(spamInterval);
-    alert("Spammer stopped!");
+    log("Spammer stopped.");
 });
 </script>
 
